@@ -26,18 +26,33 @@
   <button @click="show = !show">Toggle</button>
 
 
+
   <div class="container h-100" v-show="show">
     <h1>Vertical</h1>
-    <vue-slider  
-    height="120px"
+    <vue-slider   
+    tooltip="always"
+    :tooltip-style="{background: 'red', width: '112px'}"
+    :min= "10"
+    :max= "1000"
+    :interval="10"  
+    height="320px"
+    :slider-style="{background: 'red', width: '112px'}"
     class="star-slider"
-    dotSize="22"
-    tooltip="hover"
-    width="4"
+    :dotSize="22"
+    width="4" 
     v-model="value9"
-    reverse="true"
+    :reverse="true" 
     direction="vertical">
       
+  <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }">
+   
+
+    <div id="customLabel" >
+      <p>
+         {{ value }}
+      </p>
+    </div>
+  </div>
     </vue-slider>
   </div>
 </div>
@@ -74,8 +89,55 @@ export default {
 </script>
 
 <style> 
+.vue-slider-dot {
+  background-color: green !important;
+}
 #app {
   margin: 50px;
 }
+
+#customLabel {
+  background: lightgrey;
+  padding: 10px;
+}
+
+.star-slider .vue-slider .vue-slider-dot {
+  background:  "yellow"
+}
+#pretty-slider .vue-slider-process {
+  background-image: -webkit-linear-gradient(left, #f05b72, #3498db);
+}
+.custom-tooltip {
+  text-align: center;
+}
+.custom-tooltip img {
+  display: block;
+}
+.custom-label {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  transform: translate(-50%, -12px);
+  margin-left: 3px;
+}
+.custom-label::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 5px);
+  width: 1px;
+  height: 5px;
+  background-color: #000;
+}
+.custom-label.active {
+  color: #2980b9;
+  font-weight: bold;
+}
+.custom-label.active::after {
+  background-color: #2980b9;
+  width: 2px;
+}
+
 
 </style>
