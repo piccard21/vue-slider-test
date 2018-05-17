@@ -24,6 +24,22 @@
     <vue-slider ref="slider4" v-model="value4" :show="show"></vue-slider>
   </div>
   <button @click="show = !show">Toggle</button>
+
+
+  <div class="container h-100" v-show="show">
+    <h1>Vertical</h1>
+    <vue-slider  
+    height="120px"
+    class="star-slider"
+    dotSize="22"
+    tooltip="hover"
+    width="4"
+    v-model="value9"
+    reverse="true"
+    direction="vertical">
+      
+    </vue-slider>
+  </div>
 </div>
 </template>
 
@@ -41,7 +57,8 @@ export default {
       value1: 50,
       value2: 50,
       value3: 50,
-      value4: 50
+      value4: 50,
+      value9: 22
     }
   },
   mounted() {    
