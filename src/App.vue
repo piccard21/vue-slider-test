@@ -55,19 +55,51 @@
   </div>
     </vue-slider>
   </div>
+
+
+
+  <div class="wp" v-waypoint="{ active: true, callback: onWaypoint, options: intersectionOptions }">
+    123
+  </div>
+
 </div>
 </template>
 
 <script> 
 import vueSlider from 'vue-slider-component'
+import VueWaypoint from 'vue-waypoint'
+import Vue from 'vue'
+// Waypoint plugin
+Vue.use(VueWaypoint)
 
 export default {
   components: {
     vueSlider
   },
   name: 'app', 
+  methods: {
+
+    onWaypoint ({ going, direction }) {
+        console.log(going, direction )
+      // going: in, out
+      // direction: top, right, bottom, left
+      if (going === this.$waypointMap.GOING_IN) {
+        console.log('waypoint going in!')
+      }
+
+      if (direction === this.$waypointMap.DIRECTION_TOP) {
+        console.log('waypoint going top!')
+      }
+    } 
+  },
   data() {
     return {
+
+    intersectionOptions: {
+      root: null,
+      rootMargin: '0px 0px 0px 0px',
+      thresholds: [0]
+    },
       show: true,
       value1: 50,
       value2: 50,
@@ -89,6 +121,11 @@ export default {
 </script>
 
 <style> 
+.wp {
+  background-color: pink;
+  height: 10rem;
+  width: 100%;
+}
 .vue-slider-dot {
   background-color: green !important;
 }
