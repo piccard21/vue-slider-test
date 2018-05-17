@@ -12,6 +12,7 @@
     <vue-slider ref="slider2" v-model="value2"></vue-slider>
   </div>
   
+
   <!-- use v-if -->
   <div class="container" v-if="show">
     <h1>use v-if</h1>
@@ -25,41 +26,39 @@
   </div>
   <button @click="show = !show">Toggle</button>
 
+ 
+  <div id="wrapper" class="wp" ref="wrapper">
+    <ul>
+      <li v-for="i in 101" :key="i" v-waypoint="{ active: true, callback: onWaypoint, options: intersectionOptions}" :id="'sa-'+i" :ankerid="i">{{i}}</li> 
+    </ul>
+ 
+  </div>
 
-
-  <div class="container h-100" v-show="show">
+  <div class="container" v-show="show">
     <h1>Vertical</h1>
     <vue-slider   
     tooltip="always"
     :tooltip-style="{background: 'red', width: '112px'}"
-    :min= "10"
-    :max= "1000"
+    :min= "1"
+    :max= "max"
     :interval="10"  
     height="320px"
     :slider-style="{background: 'red', width: '112px'}"
-    class="star-slider"
-    :dotSize="22"
+    class="star-slider" 
     width="4" 
-    v-model="value9"
-    :reverse="true" 
+    v-model="val"
+    :reverse="true"  
+    @callback="scrollTo"
     direction="vertical">
-      
-  <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }">
-   
 
-    <div id="customLabel" >
-      <p>
-         {{ value }}
-      </p>
+      <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }"> 
+        <div id="customLabel" >
+          <p>
+             {{ value }}
+          </p>
+        </div>
     </div>
-  </div>
     </vue-slider>
-  </div>
-
-
-
-  <div class="wp" v-waypoint="{ active: true, callback: onWaypoint, options: intersectionOptions }">
-    123
   </div>
 
 </div>
@@ -78,25 +77,26 @@ export default {
   },
   name: 'app', 
   methods: {
+    scrollTo() { 
+                window.location.href = "#sa-"+this.val;
+    },
+    onWaypoint (a) { 
+              if (a.going === this.$waypointMap.GOING_IN) {
+                console.log('waypoint going in!')
+                this.val=a.el.getAttribute("ankerid")
+              }
 
-    onWaypoint ({ going, direction }) {
-        console.log(going, direction )
-      // going: in, out
-      // direction: top, right, bottom, left
-      if (going === this.$waypointMap.GOING_IN) {
-        console.log('waypoint going in!')
-      }
-
-      if (direction === this.$waypointMap.DIRECTION_TOP) {
-        console.log('waypoint going top!')
-      }
-    } 
+              if (a.direction === this.$waypointMap.DIRECTION_TOP) {
+                console.log('waypoint going top!')
+              }
+    }
   },
-  data() {
+  data() {  
     return {
-
+      max: 111,
+      val: 1,
     intersectionOptions: {
-      root: null,
+      root: this.$refs.wrapper,
       rootMargin: '0px 0px 0px 0px',
       thresholds: [0]
     },
@@ -121,9 +121,14 @@ export default {
 </script>
 
 <style> 
+.wrapper {
+  display: block;
+
+}
 .wp {
   background-color: pink;
-  height: 10rem;
+  height: 5rem;
+  overflow-y: auto;
   width: 100%;
 }
 .vue-slider-dot {
