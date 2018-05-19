@@ -7,7 +7,7 @@
 
 		  <div id="wrapper" class="wp" ref="wrapper">
 		    <ul>
-		      <li class="item" v-for="i in max" :key="i" v-waypoint="{ active: true, callback: onWaypoint, options: intersectionOptions}" :id="'sa-'+i" :ankerid="i">{{i}}</li> 
+		      <li class="item" v-for="i in max" :key="i"  :id="'sa-'+i" :ankerid="i">{{i}}</li> 
 		    </ul>
 		 
 		  </div>
@@ -58,16 +58,14 @@
 </template>
 
 <script> 
-import vueSlider from 'vue-slider-component'
-import VueWaypoint from 'vue-waypoint'
+import vueSlider from 'vue-slider-component' 
 import VueScrollTo from 'vue-scrollto'
 import VueLodash from 'vue-lodash'
 
 const options = { name: '_' } 
 
 import Vue from 'vue'
- 
-Vue.use(VueWaypoint)
+  
 Vue.use(VueScrollTo)
 Vue.use(VueLodash, options) // options is optional
 
@@ -105,39 +103,6 @@ export default {
 
 		VueScrollTo.scrollTo(document.getElementById('sa-'+this.val), 100, options) 
     },
-    onWaypoint (a) {   
-    	return
-    		if (this.isDragging) return;
-    		if (!this.isWayPointActive) return;
-
-               console.log(a.direction)  
-
-              if (a.direction === this.$waypointMap.DIRECTION_TOP) {
-	              if (a.going === this.$waypointMap.GOING_OUT) { 
-
-	                let val = parseInt(a.el.getAttribute("ankerid"))
-	                console.log('GOING_OUT!', val, this.val ) 
-
-	                this.setVal(++val)
-
-	                console.log('-->next', val, this.val )
-	              }
-              }
-
-
-              if (a.direction === this.$waypointMap.DIRECTION_BOTTOM) {
-	              if (a.going === this.$waypointMap.GOING_IN) {  
-
-	                let val = parseInt(a.el.getAttribute("ankerid"))
-	                console.log('GOING_IN!', val, this.val)
-
-	                this.setVal(parseInt(a.el.getAttribute("ankerid")))
-
-	                console.log('-->next', val, this.val )
-	              }
-              }
-
-    }, 
   },
   data() {  
     return { 
@@ -157,25 +122,30 @@ export default {
  		this.scrollTo= this._.debounce(this.scrollToRaw, 100) 
   },
   mounted() {    
-$(this.$refs.wrapper).scroll(() => {
-	let wrapperOffset = $(this.$refs.wrapper).offset();
-	let windowHeight = $(this.$refs.wrapper).height();		
-  
+	$(this.$refs.wrapper).scroll(() => {
+		let wrapperOffset = $(this.$refs.wrapper).offset();
+		let windowHeight = $(this.$refs.wrapper).height();		
+	  
 
-	let first = false;
-	let current = undefined;
-	$(".item").each( function() {
-		let offset = $(this).offset(); 
-		if(offset.top < (wrapperOffset.top+windowHeight) && offset.top > 0) { 
-		 	current = $(this).attr("ankerid")
-			console.info($(this).attr("ankerid"),offset.top , wrapperOffset.top+windowHeight);
-			return false
-		}
-	});
+		let first = false;
+		let current = undefined;
+		let margin = 0;
 
-	this.setVal(current);
 
-}); 
+		$(".item").each( function() {
+			let offset = $(this).offset(); 
+			let height = $(this).height(); 
+
+
+			if(offset.top < (wrapperOffset.top+windowHeight) && offset.top >= (wrapperOffset.top+margin) && offset.top > 0) {   
+			 	current = $(this).attr("ankerid")
+				return false
+			}
+		});
+
+		this.setVal(current);
+
+	}); 
   }
 }
 </script>
