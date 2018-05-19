@@ -81,7 +81,7 @@ export default {
 		let options = {
 		    container: '#wrapper', 
 		    cancelable: false,
-		    offset: -10,
+		    offset: 0,
 
 		    onStart: (element) => {
 		      this.isWayPointActive=false;
