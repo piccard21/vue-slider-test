@@ -1,65 +1,56 @@
 <template>
-<div id="app">
-  <!-- Do not do anything -->
-  <div class="container" v-show="show">
-    <h1>Do not do anything</h1>
-    <vue-slider ref="slider1" v-model="value1"></vue-slider>
-  </div>
-  
-  <!-- use refresh -->
-  <div class="container" v-show="show">
-    <h1>use refresh</h1>
-    <vue-slider ref="slider2" v-model="value2"></vue-slider>
-  </div>
-  
+<div id="app"> 
 
-  <!-- use v-if -->
-  <div class="container" v-if="show">
-    <h1>use v-if</h1>
-    <vue-slider ref="slider3" v-model="value3"></vue-slider>
-  </div>
-  
-  <!-- use the show attribute -->
-  <div class="container" v-show="show">
-    <h1>use the show attribute</h1>
-    <vue-slider ref="slider4" v-model="value4" :show="show"></vue-slider>
-  </div>
-  <button @click="show = !show">Toggle</button>
+	<b-container class="bv-example-row">
+    <b-row>
+        <b-col cols="8" class=""> 
 
- 
-  <div id="wrapper" class="wp" ref="wrapper">
-    <ul>
-      <li v-for="i in 101" :key="i" v-waypoint="{ active: true, callback: onWaypoint, options: intersectionOptions}" :id="'sa-'+i" :ankerid="i">{{i}}</li> 
-    </ul>
- 
-  </div>
+		  <div id="wrapper" class="wp" ref="wrapper">
+		    <ul>
+		      <li class="item" v-for="i in max" :key="i" v-waypoint="{ active: true, callback: onWaypoint, options: intersectionOptions}" :id="'sa-'+i" :ankerid="i">{{i}}</li> 
+		    </ul>
+		 
+		  </div>
+	   	</b-col>
+        <b-col>
+        	
+			  <div class="container">
+			    <h1>Vertical</h1>
+			    <vue-slider   
+			    tooltip="always" 
+			    :min= "1"
+			    :max= "max"
+			    :interval="1"  
+			    height="320px" 
+			    class="star-slider" 
+			    width="4" 
+			    v-model="val"
+			    :reverse="true"  
+			    @callback="scrollTo"
+			    @drag-start="isDragging=true" 
+			    @drag-end="isDragging=false"   
+			    direction="vertical">
 
-  <div class="container" v-show="show">
-    <h1>Vertical</h1>
-    <vue-slider   
-    tooltip="always"
-    :tooltip-style="{background: 'red', width: '112px'}"
-    :min= "1"
-    :max= "max"
-    :interval="10"  
-    height="320px"
-    :slider-style="{background: 'red', width: '112px'}"
-    class="star-slider" 
-    width="4" 
-    v-model="val"
-    :reverse="true"  
-    @callback="scrollTo"
-    direction="vertical">
+			      <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }"> 
+			        <div id="customLabel" >
+			          <p>
+			             {{ value }}
+			          </p>
+			        </div>
+			    </div>
+			    </vue-slider>
+			  </div>
+        </b-col>
 
-      <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }"> 
-        <div id="customLabel" >
-          <p>
-             {{ value }}
-          </p>
-        </div>
-    </div>
-    </vue-slider>
-  </div>
+        <b-col>
+        	<h2>{{val}}</h2>
+        	<h2>w: {{isWayPointActive}}</h2>
+        	<h2>d: {{isDragging}}</h2>
+        	<h2>isW: {{isWaypoint}}</h2>
+	   	</b-col>
+	    </b-row>
+
+	</b-container> 
 
 </div>
 </template>
@@ -67,9 +58,16 @@
 <script> 
 import vueSlider from 'vue-slider-component'
 import VueWaypoint from 'vue-waypoint'
+import VueScrollTo from 'vue-scrollto'
+import VueLodash from 'vue-lodash'
+
+const options = { name: '_' } 
+
 import Vue from 'vue'
-// Waypoint plugin
+ 
 Vue.use(VueWaypoint)
+Vue.use(VueScrollTo)
+Vue.use(VueLodash, options) // options is optional
 
 export default {
   components: {
@@ -77,109 +75,103 @@ export default {
   },
   name: 'app', 
   methods: {
-    scrollTo() { 
-                window.location.href = "#sa-"+this.val;
+  	setValRaw(val) {
+  		this.isWaypoint = true;
+  		this.val = val;
+	    console.log('-->setValRaw',  this.val )
+  	},
+    scrollToRaw() {   
+
+		if(this.isWaypoint) {
+			this.isWaypoint = false;
+			return;
+		}
+
+		console.info("SCROLLTO", this.val);
+
+		let options = {
+		    container: '#wrapper', 
+		    cancelable: false,
+		    offset: -10,
+
+		    onStart: (element) => {
+		      this.isWayPointActive=false;
+		    },
+		    onDone: (element) => {
+		      this.isWayPointActive=true;
+				console.info("SCROLLTO END");
+		    },
+		    onCancel: function() { 
+		      // this.isWayPointActive=false;
+		    },
+		    x: false,
+		    y: true
+		}
+
+		VueScrollTo.scrollTo(document.getElementById('sa-'+this.val), 100, options) 
     },
-    onWaypoint (a) { 
-              if (a.going === this.$waypointMap.GOING_IN) {
-                console.log('waypoint going in!')
-                this.val=a.el.getAttribute("ankerid")
-              }
+    onWaypoint (a) {   
+    		if (this.isDragging) return;
+    		if (!this.isWayPointActive) return;
+
+               console.log(a.direction)  
 
               if (a.direction === this.$waypointMap.DIRECTION_TOP) {
-                console.log('waypoint going top!')
+	              if (a.going === this.$waypointMap.GOING_OUT) { 
+	                let val = parseInt(a.el.getAttribute("ankerid"))
+	                console.log('GOING_OUT!', val) 
+	                this.setVal(val +1)
+	                console.log('-->next', val, this.val )
+	              }
               }
-    }
+
+
+              if (a.direction === this.$waypointMap.DIRECTION_BOTTOM) {
+	              if (a.going === this.$waypointMap.GOING_IN) {  
+	                this.setVal(parseInt(a.el.getAttribute("ankerid")))
+	                console.log('GOING_IN!', this.val)
+	              }
+              }
+
+    }, 
   },
   data() {  
     return {
+      isWaypoint: false,
+      isDragging: false,
+      isWayPointActive: true,	 
       max: 111,
       val: 1,
-    intersectionOptions: {
-      root: this.$refs.wrapper,
-      rootMargin: '0px 0px 0px 0px',
-      thresholds: [0]
-    },
-      show: true,
-      value1: 50,
-      value2: 50,
-      value3: 50,
-      value4: 50,
-      value9: 22
+	    intersectionOptions: {
+	      root: this.$refs.wrapper,
+	      rootMargin: '0px',
+	      thresholds: 1
+	    },
     }
+  },
+  created() { 
+ 		 this.setVal = this._.debounce(this.setValRaw, 10) 
+ 		this.scrollTo= this._.debounce(this.scrollToRaw, 51)
+ 		// this.onWaypoint = this._.debounce(this.onWaypointRaw, 5)
+ 
+
   },
   mounted() {    
-  },
-  watch: {
-    show (val) {
-      if (val) {
-        this.$nextTick(() => this.$refs.slider2.refresh());
-      }
-    }
-  } 
+  }
 }
 </script>
 
 <style> 
-.wrapper {
-  display: block;
-
-}
-.wp {
-  background-color: pink;
-  height: 5rem;
-  overflow-y: auto;
-  width: 100%;
-}
-.vue-slider-dot {
-  background-color: green !important;
-}
 #app {
   margin: 50px;
 }
-
-#customLabel {
-  background: lightgrey;
-  padding: 10px;
-}
-
-.star-slider .vue-slider .vue-slider-dot {
-  background:  "yellow"
-}
-#pretty-slider .vue-slider-process {
-  background-image: -webkit-linear-gradient(left, #f05b72, #3498db);
-}
-.custom-tooltip {
-  text-align: center;
-}
-.custom-tooltip img {
-  display: block;
-}
-.custom-label {
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  transform: translate(-50%, -12px);
-  margin-left: 3px;
-}
-.custom-label::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 5px);
-  width: 1px;
-  height: 5px;
-  background-color: #000;
-}
-.custom-label.active {
-  color: #2980b9;
-  font-weight: bold;
-}
-.custom-label.active::after {
-  background-color: #2980b9;
-  width: 2px;
-}
-
+#wrapper {
+  display: block; 
+  background-color: pink;
+  height: 15rem;
+  overflow-y: auto;
+  width: 100%; 
+}  
+ 
 
 </style>

@@ -11,7 +11,10 @@ module.exports = {
 
 plugins: [
     new webpack.ProvidePlugin({
-        noUiSlider: 'nouislider'
+      $: 'jquery',
+      jquery: 'jquery',
+      'window.jQuery': 'jquery',
+      jQuery: 'jquery'
     })
 ],
   module: {
