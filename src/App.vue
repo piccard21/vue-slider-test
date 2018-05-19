@@ -26,9 +26,7 @@
 			    width="4" 
 			    v-model="val"
 			    :reverse="true"  
-			    @callback="scrollTo"
-			    @drag-start="isDragging=true" 
-			    @drag-end="isDragging=false"   
+			    @callback="scrollTo" 
 			    direction="vertical">
 
 			      <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }"> 
@@ -43,8 +41,7 @@
         </b-col>
 
         <b-col>
-        	<h2>{{val}}</h2>
-        	<h2>w: {{isWayPointActive}}</h2>
+        	<h2>{{val}}</h2> 
         	<h2>d: {{isDragging}}</h2> 
 	   		<a href="#" @click="setVal(--val);scrollTo();">&lt;</a>
 	   		<a href="#" @click="setVal(++val);scrollTo();">&gt;</a>
@@ -76,8 +73,7 @@ export default {
   name: 'app', 
   methods: {
   	setValRaw(val) { 
-  		this.val = val;
-	    console.log('----->setValRaw',  this.val ) 
+  		this.val = val; 
   	},
     scrollToRaw() {    
 
@@ -106,15 +102,8 @@ export default {
   },
   data() {  
     return { 
-		isDragging: false,
-		isWayPointActive: true,	 
 		max: 111,
-		val: 1,
-		intersectionOptions: {
-		  root: this.$refs.wrapper,
-		  rootMargin: '10px',
-		  thresholds: .5
-		},
+		val: 1
 	}
   },
   created() { 
@@ -125,25 +114,21 @@ export default {
 	$(this.$refs.wrapper).scroll(() => {
 		let wrapperOffset = $(this.$refs.wrapper).offset();
 		let windowHeight = $(this.$refs.wrapper).height();		
-	  
-
-		let first = false;
-		let current = undefined;
-		let margin = 0;
-
+	   
+		let first = undefined;
+		let margin = -15; 
 
 		$(".item").each( function() {
 			let offset = $(this).offset(); 
-			let height = $(this).height(); 
+			let height = $(this).height();  
 
-
-			if(offset.top < (wrapperOffset.top+windowHeight) && offset.top >= (wrapperOffset.top+margin) && offset.top > 0) {   
-			 	current = $(this).attr("ankerid")
+			if(offset.top < (wrapperOffset.top+windowHeight) && offset.top >= (wrapperOffset.top+margin) && offset.top > margin) {   
+			 	first = $(this).attr("ankerid")
 				return false
 			}
 		});
 
-		this.setVal(current);
+		this.setVal(first);
 
 	}); 
   }
