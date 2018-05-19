@@ -79,7 +79,7 @@ export default {
   methods: {
   	setValRaw(val) { 
   		this.val = val;
-	    console.log('-->setValRaw',  this.val )
+	    console.log('----->setValRaw',  this.val ) 
   	},
     scrollToRaw() {    
 
@@ -106,6 +106,7 @@ export default {
 		VueScrollTo.scrollTo(document.getElementById('sa-'+this.val), 100, options) 
     },
     onWaypoint (a) {   
+    	return
     		if (this.isDragging) return;
     		if (!this.isWayPointActive) return;
 
@@ -113,9 +114,12 @@ export default {
 
               if (a.direction === this.$waypointMap.DIRECTION_TOP) {
 	              if (a.going === this.$waypointMap.GOING_OUT) { 
+
 	                let val = parseInt(a.el.getAttribute("ankerid"))
-	                console.log('GOING_OUT!', val) 
-	                this.setVal(val +1)
+	                console.log('GOING_OUT!', val, this.val ) 
+
+	                this.setVal(++val)
+
 	                console.log('-->next', val, this.val )
 	              }
               }
@@ -123,9 +127,13 @@ export default {
 
               if (a.direction === this.$waypointMap.DIRECTION_BOTTOM) {
 	              if (a.going === this.$waypointMap.GOING_IN) {  
+
+	                let val = parseInt(a.el.getAttribute("ankerid"))
+	                console.log('GOING_IN!', val, this.val)
+
 	                this.setVal(parseInt(a.el.getAttribute("ankerid")))
-	                console.log('GOING_IN!', this.val)
-	                console.log('-->next', this.val )
+
+	                console.log('-->next', val, this.val )
 	              }
               }
 
@@ -139,21 +147,45 @@ export default {
 		val: 1,
 		intersectionOptions: {
 		  root: this.$refs.wrapper,
-		  rootMargin: '0px',
-		  thresholds: 1
+		  rootMargin: '10px',
+		  thresholds: .5
 		},
 	}
   },
   created() { 
- 		this.setVal = this._.debounce(this.setValRaw, 101) 
- 		this.scrollTo= this._.debounce(this.scrollToRaw, 101) 
+ 		this.setVal = this._.debounce(this.setValRaw, 100) 
+ 		this.scrollTo= this._.debounce(this.scrollToRaw, 100) 
   },
   mounted() {    
+$(this.$refs.wrapper).scroll(() => {
+	let wrapperOffset = $(this.$refs.wrapper).offset();
+	let windowHeight = $(this.$refs.wrapper).height();		
+  
+
+	let first = false;
+	let current = undefined;
+	$(".item").each( function() {
+		let offset = $(this).offset(); 
+		if(offset.top < (wrapperOffset.top+windowHeight) && offset.top > 0) { 
+		 	current = $(this).attr("ankerid")
+			console.info($(this).attr("ankerid"),offset.top , wrapperOffset.top+windowHeight);
+			return false
+		}
+	});
+
+	this.setVal(current);
+
+}); 
   }
 }
 </script>
 
 <style> 
+
+.first {
+	background-color: red;
+}
+
 #app {
   margin: 50px;
 }
