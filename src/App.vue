@@ -41,8 +41,7 @@
         </b-col>
 
         <b-col>
-        	<h2>{{val}}</h2> 
-        	<h2>d: {{isDragging}}</h2> 
+        	<h2>{{val}}</h2>  
 	   		<a href="#" @click="setVal(--val);scrollTo();">&lt;</a>
 	   		<a href="#" @click="setVal(++val);scrollTo();">&gt;</a>
 	   	</b-col>
