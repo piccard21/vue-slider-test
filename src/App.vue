@@ -45,10 +45,12 @@
         <b-col>
         	<h2>{{val}}</h2>
         	<h2>w: {{isWayPointActive}}</h2>
-        	<h2>d: {{isDragging}}</h2>
-        	<h2>isW: {{isWaypoint}}</h2>
+        	<h2>d: {{isDragging}}</h2> 
+	   		<a href="#" @click="setVal(--val);scrollTo();">&lt;</a>
+	   		<a href="#" @click="setVal(++val);scrollTo();">&gt;</a>
 	   	</b-col>
 	    </b-row>
+ 
 
 	</b-container> 
 
@@ -75,17 +77,11 @@ export default {
   },
   name: 'app', 
   methods: {
-  	setValRaw(val) {
-  		this.isWaypoint = true;
+  	setValRaw(val) { 
   		this.val = val;
 	    console.log('-->setValRaw',  this.val )
   	},
-    scrollToRaw() {   
-
-		if(this.isWaypoint) {
-			this.isWaypoint = false;
-			return;
-		}
+    scrollToRaw() {    
 
 		console.info("SCROLLTO", this.val);
 
@@ -101,8 +97,7 @@ export default {
 		      this.isWayPointActive=true;
 				console.info("SCROLLTO END");
 		    },
-		    onCancel: function() { 
-		      // this.isWayPointActive=false;
+		    onCancel: function() {  
 		    },
 		    x: false,
 		    y: true
@@ -130,31 +125,28 @@ export default {
 	              if (a.going === this.$waypointMap.GOING_IN) {  
 	                this.setVal(parseInt(a.el.getAttribute("ankerid")))
 	                console.log('GOING_IN!', this.val)
+	                console.log('-->next', this.val )
 	              }
               }
 
     }, 
   },
   data() {  
-    return {
-      isWaypoint: false,
-      isDragging: false,
-      isWayPointActive: true,	 
-      max: 111,
-      val: 1,
-	    intersectionOptions: {
-	      root: this.$refs.wrapper,
-	      rootMargin: '0px',
-	      thresholds: 1
-	    },
-    }
+    return { 
+		isDragging: false,
+		isWayPointActive: true,	 
+		max: 111,
+		val: 1,
+		intersectionOptions: {
+		  root: this.$refs.wrapper,
+		  rootMargin: '0px',
+		  thresholds: 1
+		},
+	}
   },
   created() { 
- 		 this.setVal = this._.debounce(this.setValRaw, 10) 
- 		this.scrollTo= this._.debounce(this.scrollToRaw, 51)
- 		// this.onWaypoint = this._.debounce(this.onWaypointRaw, 5)
- 
-
+ 		this.setVal = this._.debounce(this.setValRaw, 101) 
+ 		this.scrollTo= this._.debounce(this.scrollToRaw, 101) 
   },
   mounted() {    
   }
