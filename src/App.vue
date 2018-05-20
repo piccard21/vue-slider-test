@@ -18,7 +18,7 @@
 			    <h1>Vertical</h1>
 			    <vue-slider   
 			    tooltip="always" 
-			    :min= "1"
+			    :min= "min"
 			    :max= "max"
 			    :interval="1"  
 			    height="320px" 
@@ -42,8 +42,8 @@
 
         <b-col>
         	<h2>{{val}}</h2>  
-	   		<a href="#" @click="setVal(--val);scrollTo();">&lt;</a>
-	   		<a href="#" @click="setVal(++val);scrollTo();">&gt;</a>
+	   		<a href="#" @click.prevent.stop="scrollBack">&lt;</a>
+	   		<a href="#" @click.prevent.stop="scrollForward">&gt;</a>
 	   	</b-col>
 	    </b-row>
  
@@ -74,10 +74,17 @@ export default {
   	setValRaw(val) { 
   		this.val = val; 
   	},
+    scrollBack() { 
+    	let val = (this.val > this.min) ? --this.val : this.val;
+    	this.setVal(val);  
+    	this.scrollTo();  
+    },
+    scrollForward() {
+    	let val = (this.val < this.max)  ? ++this.val : this.val;
+    	this.setVal(val);  
+    	this.scrollTo();  
+    },
     scrollToRaw() {    
-
-		console.info("SCROLLTO", this.val);
-
 		let options = {
 		    container: '#wrapper', 
 		    cancelable: false,
@@ -88,7 +95,6 @@ export default {
 		    },
 		    onDone: (element) => {
 		      this.isWayPointActive=true;
-				console.info("SCROLLTO END");
 		    },
 		    onCancel: function() {  
 		    },
@@ -101,6 +107,7 @@ export default {
   },
   data() {  
     return { 
+		min: 1,
 		max: 111,
 		val: 1
 	}
@@ -113,7 +120,7 @@ export default {
 	$(this.$refs.wrapper).scroll(() => {
 		let wrapperOffset = $(this.$refs.wrapper).offset();
 		let windowHeight = $(this.$refs.wrapper).height();		
-	   
+
 		let first = undefined;
 		let margin = -15; 
 
@@ -126,8 +133,8 @@ export default {
 				return false
 			}
 		});
-
-		this.setVal(first);
+ 
+		this.setVal(first); 
 
 	}); 
   }
