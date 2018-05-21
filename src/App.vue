@@ -16,23 +16,16 @@
         	
 			  <div class="container">
 			    <h1>Vertical</h1>
-			    <vue-slider   
-			    tooltip="always" 
-			    :min= "slider.min"
-			    :max= "slider.max"
-			    :interval="1"  
-			    height="320px" 
-			    class="star-slider" 
-			    width="4" 
-			    v-model="slider.value"
-			    :reverse="true"  
-			    @callback="scrollTo" 
-			    direction="vertical">
+			    <vue-slider @callback="scrollTo"  v-model="slider.value" v-bind="slider">
 
 			      <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }"> 
 			        <div id="customLabel" >
-			          <p>
-			             {{ value }}
+			        	<div class="popover-wrapper">
+				        	<div class="popover">
+				        		 {{ value }} from {{ slider.max }}
+				        	</div>
+			        	</div>
+			            
 			          </p>
 			        </div>
 			    </div>
@@ -94,7 +87,14 @@ export default {
     	slider: {
 			min: 1,
 			max: 111,
-			value: 1
+			value: 1,
+		    interval: 1,  
+		    tooltip:"always", 
+		    height:"320px", 
+		    width: 4, 		   
+		    reverse: true,
+		    direction:"vertical",
+		    tooltipDir: "right"
     	},
     	scrollOptions: {
 		    container: '#wrapper', 
@@ -136,6 +136,17 @@ export default {
 </script>
 
 <style> 
+.popover-wrapper {
+	background-color: red;
+	min-width: 15rem;
+	border: none
+}
+.popover{
+	background-color: white;
+	display: inline-block;
+	border: 1px solid lightgrey;
+	padding: 1rem;
+}
 
 .first {
 	background-color: red;
