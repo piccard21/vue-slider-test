@@ -7,7 +7,7 @@
 
 		  <div id="wrapper" class="wp" ref="wrapper">
 		    <ul>
-		      <li class="item" v-for="i in max" :key="i"  :id="'sa-'+i" :ankerid="i">{{i}}</li> 
+		      <li class="item" v-for="i in slider.max" :key="i"  :id="'sa-'+i" :ankerid="i">{{i}}</li> 
 		    </ul>
 		 
 		  </div>
@@ -18,13 +18,13 @@
 			    <h1>Vertical</h1>
 			    <vue-slider   
 			    tooltip="always" 
-			    :min= "min"
-			    :max= "max"
+			    :min= "slider.min"
+			    :max= "slider.max"
 			    :interval="1"  
 			    height="320px" 
 			    class="star-slider" 
 			    width="4" 
-			    v-model="value"
+			    v-model="slider.value"
 			    :reverse="true"  
 			    @callback="scrollTo" 
 			    direction="vertical">
@@ -41,7 +41,7 @@
         </b-col>
 
         <b-col>
-        	<h2>{{value}}</h2>  
+        	<h2>{{slider.value}}</h2>  
 	   		<a href="#" @click.prevent.stop="scrollBack">&lt;</a>
 	   		<a href="#" @click.prevent.stop="scrollForward">&gt;</a>
 	   	</b-col>
@@ -72,35 +72,38 @@ export default {
   name: 'app', 
   methods: {
   	setVal(val) { 
-  		this.value = val; 
+  		this.slider.value = val; 
   	},
     scrollBack() { 
-    	let val = (this.value > this.min) ? --this.value : this.value;
+    	let val = (this.slider.value > this.slider.min) ? --this.slider.value : this.slider.value;
     	this.setVal(val);  
     	this.scrollTo();  
     },
     scrollForward() {
-    	let val = (this.value < this.max)  ? ++this.value : this.value;
+    	let val = (this.slider.value < this.slider.max)  ? ++this.slider.value : this.slider.value;
     	this.setVal(val);  
     	this.scrollTo();  
     },
-    scrollTo() {    
-		let options = {
+    scrollTo() { 
+
+		this.$scrollTo(document.getElementById('sa-'+this.slider.value), 100, this.scrollOptions) 
+    },
+  },
+  data() {  
+    return { 
+    	slider: {
+			min: 1,
+			max: 111,
+			value: 1
+    	},
+    	scrollOptions: {
 		    container: '#wrapper', 
 		    cancelable: false,
 		    offset: 0,
 		    x: false,
 		    y: true
-		}
-
-		VueScrollTo.scrollTo(document.getElementById('sa-'+this.value), 100, options) 
-    },
-  },
-  data() {  
-    return { 
-		min: 1,
-		max: 111,
-		value: 1
+    	},
+    	margin: -15
 	}
   },
   created() { 
@@ -113,7 +116,7 @@ export default {
 		let windowHeight = $(this.$refs.wrapper).height();		
 
 		let first = undefined;
-		let margin = -15; 
+		let margin = this.margin; 
 
 		$(".item").each( function() {
 			let offset = $(this).offset(); 
