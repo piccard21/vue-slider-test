@@ -71,7 +71,7 @@ export default {
   },
   name: 'app', 
   methods: {
-  	setValRaw(val) { 
+  	setVal(val) { 
   		this.val = val; 
   	},
     scrollBack() { 
@@ -84,20 +84,11 @@ export default {
     	this.setVal(val);  
     	this.scrollTo();  
     },
-    scrollToRaw() {    
+    scrollTo() {    
 		let options = {
 		    container: '#wrapper', 
 		    cancelable: false,
 		    offset: 0,
-
-		    onStart: (element) => {
-		      this.isWayPointActive=false;
-		    },
-		    onDone: (element) => {
-		      this.isWayPointActive=true;
-		    },
-		    onCancel: function() {  
-		    },
 		    x: false,
 		    y: true
 		}
@@ -113,8 +104,8 @@ export default {
 	}
   },
   created() { 
- 		this.setVal = this._.debounce(this.setValRaw, 100) 
- 		this.scrollTo= this._.debounce(this.scrollToRaw, 100) 
+ 		this.setVal = this._.debounce(this.setVal, 100) 
+ 		this.scrollTo= this._.debounce(this.scrollTo, 100) 
   },
   mounted() {    
 	$(this.$refs.wrapper).scroll(() => {
