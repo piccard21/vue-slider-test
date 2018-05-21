@@ -24,7 +24,7 @@
 			    height="320px" 
 			    class="star-slider" 
 			    width="4" 
-			    v-model="val"
+			    v-model="value"
 			    :reverse="true"  
 			    @callback="scrollTo" 
 			    direction="vertical">
@@ -41,7 +41,7 @@
         </b-col>
 
         <b-col>
-        	<h2>{{val}}</h2>  
+        	<h2>{{value}}</h2>  
 	   		<a href="#" @click.prevent.stop="scrollBack">&lt;</a>
 	   		<a href="#" @click.prevent.stop="scrollForward">&gt;</a>
 	   	</b-col>
@@ -72,15 +72,15 @@ export default {
   name: 'app', 
   methods: {
   	setVal(val) { 
-  		this.val = val; 
+  		this.value = val; 
   	},
     scrollBack() { 
-    	let val = (this.val > this.min) ? --this.val : this.val;
+    	let val = (this.value > this.min) ? --this.value : this.value;
     	this.setVal(val);  
     	this.scrollTo();  
     },
     scrollForward() {
-    	let val = (this.val < this.max)  ? ++this.val : this.val;
+    	let val = (this.value < this.max)  ? ++this.value : this.value;
     	this.setVal(val);  
     	this.scrollTo();  
     },
@@ -93,14 +93,14 @@ export default {
 		    y: true
 		}
 
-		VueScrollTo.scrollTo(document.getElementById('sa-'+this.val), 100, options) 
+		VueScrollTo.scrollTo(document.getElementById('sa-'+this.value), 100, options) 
     },
   },
   data() {  
     return { 
 		min: 1,
 		max: 111,
-		val: 1
+		value: 1
 	}
   },
   created() { 
