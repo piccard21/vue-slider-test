@@ -7,7 +7,7 @@
 
 		  <div id="wrapper" class="wp" ref="wrapper">
 		    <ul>
-		      <li class="item" v-for="i in slider.max" :key="i"  :id="'sa-'+i" :ankerid="i">{{i}}</li> 
+		      <li class="item" v-for="i in slider.max" :key="i"  :id="'item-'+i" :itemid="i">{{i}}</li> 
 		    </ul>
 		 
 		  </div>
@@ -79,7 +79,7 @@ export default {
     },
     scrollTo() { 
 
-		this.$scrollTo(document.getElementById('sa-'+this.slider.value), 100, this.scrollOptions) 
+		this.$scrollTo(document.getElementById('item-'+this.slider.value), 100, this.scrollOptions) 
     },
   },
   data() {  
@@ -123,7 +123,7 @@ export default {
 			let height = $(this).height();  
 
 			if(offset.top < (wrapperOffset.top+windowHeight) && offset.top >= (wrapperOffset.top+margin) && offset.top > margin) {   
-			 	first = $(this).attr("ankerid")
+			 	first = $(this).attr("itemid")
 				return false
 			}
 		});
